@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:carilaundry2/utils/constants.dart';
 
+
 enum ButtonType { PRIMARY, PLAIN }
 
 class AppButton extends StatelessWidget {
@@ -67,3 +68,26 @@ Color getTextColor(ButtonType type) {
       return Colors.white;
   }
 }
+
+// class AppButton extends StatelessWidget {
+//   final ButtonType type;
+//   final String text;
+//   final VoidCallback onPressed;
+
+//   AppButton({
+//     required this.type,
+//     required this.text,
+//     required this.onPressed,
+//   });
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return ElevatedButton(
+//       onPressed: onPressed,
+//       style: ElevatedButton.styleFrom(
+//         backgroundColor: type == ButtonType.PRIMARY ? Colors.blue : Colors.grey,
+//       ),
+//       child: Text(text),
+//     );
+//   }
+// }

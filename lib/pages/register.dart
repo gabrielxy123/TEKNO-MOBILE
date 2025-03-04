@@ -3,94 +3,83 @@ import 'dart:convert';
 import 'package:carilaundry2/controller/AuthController.dart';
 import 'package:carilaundry2/core/apiConstant.dart';
 import 'package:carilaundry2/widgets/custom_field.dart';
+import 'package:carilaundry2/widgets/custom_snackbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_icons_null_safety/flutter_icons_null_safety.dart';
 import 'package:carilaundry2/utils/constants.dart';
 import 'package:carilaundry2/utils/helper.dart';
 import 'package:carilaundry2/widgets/app_button.dart';
-import 'package:carilaundry2/widgets/input_widget.dart';
-import 'package:carilaundry2/widgets/custom_snackbar.dart';
-
 import 'package:http/http.dart' as http;
 
-class Login extends StatefulWidget {
+class Register extends StatefulWidget {
   @override
-  State<Login> createState() => _LoginState();
+  State<Register> createState() => _RegisterState();
 }
 
-class _LoginState extends State<Login> {
+class _RegisterState extends State<Register> {
   late Authcontroller _authcontroller;
+    late TextEditingController usernameController = TextEditingController();
   late TextEditingController emailController = TextEditingController();
+  late TextEditingController confirmEmailController = TextEditingController();
   late TextEditingController passwordController = TextEditingController();
+  late TextEditingController confirmPasswordController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
     _authcontroller = Authcontroller();
-    // Inisialisasi controller jika belum dilakukan di AuthController
-    emailController = TextEditingController();
-    passwordController = TextEditingController();
+  // Inisialisasi controller jika belum dilakukan di AuthController
+  usernameController = TextEditingController();
+  emailController = TextEditingController();
+  passwordController = TextEditingController();
   }
 
-  String Name = "";
-
-  void _login(String email, String password) async {
-  if (email.isEmpty) {
-    _showErrorDialog("Email harus diisi.");
-    return;
-  }
-
-  if (password.isEmpty) {
-    _showErrorDialog("Password harus diisi.");
-    return;
-  }
-
-  try {
-    final response = await http.post(
-      Uri.parse('${Apiconstant.BASE_URL}/login'),
-      headers: {'Content-Type': 'application/json'},
-      body: jsonEncode({'email': email, 'password': password}),
-    );
-
-    if (response.statusCode == 200) {
-      final responseData = jsonDecode(response.body);
-      String Name = responseData['user']['name']; // Ambil nama pengguna dari respons API
-      CustomSnackbar.showSuccess(context, "Login Berhasil!");
-
-      // Navigasi ke Dashboard dengan membawa nama pengguna
-      print("Sending user name: $Name");
-      Navigator.pushReplacementNamed(
-        context,
-        "/dashboard",
-        arguments: Name, // Kirim nama pengguna sebagai arguments
-      );
-    } else {
-      final responseData = jsonDecode(response.body);
-      String errorMessage =
-          responseData['message'] ?? "Login gagal. Periksa data anda";
-      _showErrorDialog(errorMessage);
+  void _register(String username, String email, String password) async {
+    if (username.isEmpty || email.isEmpty || password.isEmpty) {
+      _showErrorDialog("All fields are required.");
+      return;
     }
-  } catch (e) {
-    _showErrorDialog(
-      "An error occurred. Please check your connection and try again.",
-    );
+
+    try {
+      final response = await http.post(
+        Uri.parse('${Apiconstant.BASE_URL}/register'),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: jsonEncode({
+          'name': username,
+          'email': email,
+          'password': password,
+        }),
+      );
+      
+
+      if (response.statusCode == 201) {
+        CustomSnackbar.showSuccess(context, "Registration successful!");
+        nextScreen(context, "/login");
+      } else {  
+        final responseData = jsonDecode(response.body);
+        String errorMessage = responseData['message'] ?? "Registration failed. Please try again.";
+        _showErrorDialog(errorMessage);
+      }
+    } catch (e) {
+      _showErrorDialog("An error occurred. Please check your connection and try again.");
+    }
   }
-}
 
   void _showErrorDialog(String message) {
     showDialog(
       context: context,
-      builder:
-          (context) => AlertDialog(
-            title: Text("Error"),
-            content: Text(message),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.of(context).pop(),
-                child: Text("OK"),
-              ),
-            ],
+      builder: (context) => AlertDialog(
+        title: Text("Error"),
+        content: Text(message),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: Text("OK"),
           ),
+        ],
+      ),
     );
   }
 
@@ -137,20 +126,25 @@ class _LoginState extends State<Login> {
                                 color: Colors.white,
                               ),
                             ),
-                            SizedBox(height: 20.0),
-                            Text(
-                              "Log in to your account",
-                              style: Theme.of(
-                                context,
-                              ).textTheme.titleLarge!.copyWith(
-                                fontWeight: FontWeight.w600,
-                                color: Colors.white,
-                              ),
+                            SizedBox(
+                              height: 20.0,
                             ),
+                            Text(
+                              "Register your account",
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .titleLarge!
+                                  .copyWith(
+                                    fontWeight: FontWeight.w600,
+                                    color: Colors.white,
+                                  ),
+                            )
                           ],
                         ),
                       ),
-                      SizedBox(height: 40.0),
+                      SizedBox(
+                        height: 40.0,
+                      ),
                       Flexible(
                         child: Container(
                           width: double.infinity,
@@ -169,9 +163,18 @@ class _LoginState extends State<Login> {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.stretch,
                             children: [
-                              // Lets make a generic input widget
                               SizedBox(
-                                height: 25.0,
+                                height: 15.0,
+                              ),
+                              CustomField(
+                                label: 'Username',
+                                controller: usernameController,
+                                isPassword: false,
+                                textInputType: TextInputType.name,
+                                radius: 10,
+                              ),
+                              SizedBox(
+                                height: 22.0,
                               ),
                               CustomField(
                                 label: 'Email',
@@ -180,41 +183,37 @@ class _LoginState extends State<Login> {
                                 textInputType: TextInputType.emailAddress,
                                 radius: 10,
                               ),
-                              SizedBox(height: 25.0),
+                              SizedBox(
+                                height: 22.0,
+                              ),
                               CustomField(
                                 label: 'Password',
                                 controller: passwordController,
                                 isPassword: true,
-                                textInputType: TextInputType.text,
+                                textInputType: TextInputType.visiblePassword,
                                 radius: 10,
                               ),
-                              SizedBox(height: 15.0),
-                              GestureDetector(
-                                onTap: () {},
-                                child: Text(
-                                  "Forgot Password?",
-                                  textAlign: TextAlign.right,
-                                  style: TextStyle(
-                                    color: Constants.primaryColor,
-                                    fontWeight: FontWeight.w600,
-                                  ),
-                                ),
+                              SizedBox(
+                                height: 22.0,
                               ),
-                              SizedBox(height: 20.0),
+                              SizedBox(
+                                height: 20.0,
+                              ),
                               AppButton(
                                 type: ButtonType.PRIMARY,
-                                text: "Log In",
+                                text: "Register",
                                 onPressed: () {
-                                  _login(
+                                  _register(
+                                    usernameController.text,
                                     emailController.text,
                                     passwordController.text,
                                   );
                                 },
-                              ),
+                              )
                             ],
                           ),
                         ),
-                      ),
+                      )
                     ],
                   ),
                 ),

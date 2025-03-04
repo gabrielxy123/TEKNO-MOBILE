@@ -1,3 +1,4 @@
+import 'package:carilaundry2/pages/register.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -16,17 +17,18 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return ScreenUtilInit(
       designSize: Size(375, 812),
-      builder: (context, child) => MaterialApp(
-        debugShowCheckedModeBanner: false,
-        title: "Flutter Laundry UI",
-        theme: ThemeData(
-          scaffoldBackgroundColor: Constants.scaffoldBackgroundColor,
-          visualDensity: VisualDensity.adaptivePlatformDensity,
-          textTheme: GoogleFonts.poppinsTextTheme(),
-        ),
-        initialRoute: "/",
-        onGenerateRoute: _onGenerateRoute,
-      ),
+      builder:
+          (context, child) => MaterialApp(
+            debugShowCheckedModeBanner: false,
+            title: "Flutter Laundry UI",
+            theme: ThemeData(
+              scaffoldBackgroundColor: Constants.scaffoldBackgroundColor,
+              visualDensity: VisualDensity.adaptivePlatformDensity,
+              textTheme: GoogleFonts.poppinsTextTheme(),
+            ),
+            initialRoute: "/",
+            onGenerateRoute: _onGenerateRoute,
+          ),
     );
   }
 }
@@ -34,24 +36,41 @@ class MyApp extends StatelessWidget {
 Route<dynamic> _onGenerateRoute(RouteSettings settings) {
   switch (settings.name) {
     case "/":
-      return MaterialPageRoute(builder: (BuildContext context) {
-        return Home();
-      });
+      return MaterialPageRoute(
+        builder: (BuildContext context) {
+          return Home();
+        },
+      );
     case "/login":
-      return MaterialPageRoute(builder: (BuildContext context) {
-        return Login();
-      });
+      return MaterialPageRoute(
+        builder: (BuildContext context) {
+          return Login();
+        },
+      );
+    case "/register":
+      return MaterialPageRoute(
+        builder: (BuildContext context) {
+          return Register();
+        },
+      );
     case "/dashboard":
-      return MaterialPageRoute(builder: (BuildContext context) {
-        return Dashboard();
-      });
+      return MaterialPageRoute(
+        builder: (BuildContext context) {
+          return Dashboard();
+        },
+        settings: settings, // Teruskan settings ke MaterialPageRoute
+      );
     case "/single-order":
-      return MaterialPageRoute(builder: (BuildContext context) {
-        return SingleOrder();
-      });
+      return MaterialPageRoute(
+        builder: (BuildContext context) {
+          return SingleOrder();
+        },
+      );
     default:
-      return MaterialPageRoute(builder: (BuildContext context) {
-        return Home();
-      });
+      return MaterialPageRoute(
+        builder: (BuildContext context) {
+          return Home();
+        },
+      );
   }
 }

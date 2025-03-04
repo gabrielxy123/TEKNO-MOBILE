@@ -14,6 +14,20 @@ class Dashboard extends StatefulWidget {
 class _DashboardState extends State<Dashboard> {
   // Track active index
   int activeIndex = 0;
+  String Name = "Guest"; // Default value jika tidak ada data
+
+  @override
+void didChangeDependencies() {
+  super.didChangeDependencies();
+  final args = ModalRoute.of(context)!.settings.arguments;
+  print("Received arguments: $args"); // Debugging: Cetak arguments
+  if (args != null && args is String) {
+    setState(() {
+      Name = args; // Update state dengan nama pengguna
+    });
+  }
+}
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -109,7 +123,7 @@ class _DashboardState extends State<Dashboard> {
                                         ),
                                   ),
                                   TextSpan(
-                                    text: "di CariLaundry!",
+                                    text: Name, // Tampilkan nama pengguna
                                     style: Theme.of(context)
                                         .textTheme
                                         .titleLarge!
