@@ -1,10 +1,11 @@
-import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
+import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter_icons_null_safety/flutter_icons_null_safety.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:carilaundry2/utils/constants.dart';
 import 'package:carilaundry2/widgets/latest_orders.dart';
 import 'package:carilaundry2/widgets/location_slider.dart';
+import 'package:carilaundry2/widgets/custom_card.dart';
 
 class Dashboard extends StatefulWidget {
   @override
@@ -12,8 +13,8 @@ class Dashboard extends StatefulWidget {
 }
 
 class _DashboardState extends State<Dashboard> {
-  // Track active index
   int activeIndex = 0;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -167,8 +168,44 @@ class _DashboardState extends State<Dashboard> {
                         Container(
                           height: ScreenUtil().setHeight(100.0),
                           child: Center(
-                            // lets make a widget for the cards
                             child: LocationSlider(),
+                          ),
+                        ),
+                        SizedBox(height: 20.0),
+                        Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 16.0),
+                          child: GridView.count(
+                            crossAxisCount: 2, 
+                            shrinkWrap: true,
+                            physics: NeverScrollableScrollPhysics(),
+                            mainAxisSpacing: 16.0,
+                            crossAxisSpacing: 16.0,
+                            children: [
+                              CustomCard(
+                                title: "Agian Laundry",
+                                subtitle: "Deskripsi Toko",
+                                imageUrl: "https://via.placeholder.com/150", 
+                                color: Colors.blue,
+                              ),
+                              CustomCard(
+                                title: "Fanya laundry",
+                                subtitle: "Deskripsi Toko",
+                                imageUrl: "https://via.placeholder.com/150", 
+                                color: Colors.green,
+                              ),
+                              CustomCard(
+                                title: "Laundry C",
+                                subtitle: "Deskripsi toko",
+                                imageUrl: "https://via.placeholder.com/150",
+                                color: Colors.orange,
+                              ),
+                              CustomCard(
+                                title: "Laundry D",
+                                subtitle: "Deskripsi toko",
+                                imageUrl: "https://via.placeholder.com/150", 
+                                color: Colors.purple,
+                              ),
+                            ],
                           ),
                         ),
                         LatestOrders(),
